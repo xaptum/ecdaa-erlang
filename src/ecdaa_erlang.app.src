@@ -1,0 +1,11 @@
+{application, ecdaa_erlang,
+ [
+  {description, "ECDAA NIFs"},
+  {vsn, "1.0.0"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
