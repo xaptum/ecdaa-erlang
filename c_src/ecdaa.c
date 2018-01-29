@@ -116,8 +116,8 @@ ecdaa_do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ErlNifFunc nif_funcs[] = {
-    {"ecdaa_do_sign", 3, ecdaa_do_sign},
-    {"ecdaa_do_sign", 4, ecdaa_do_sign}
+    {"sign", 3, sign},
+    {"sign", 4, sign}
 };
 
 ERL_NIF_INIT(ecdaa, nif_funcs, NULL, NULL, NULL, NULL)
