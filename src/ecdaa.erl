@@ -47,7 +47,7 @@ sign(MessageFile, SecretKeyFile, CredentialFile) when is_list(MessageFile) ->
 sign(Message, SecretKeyFile, CredentialFile) when is_binary(Message) ->
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
-  do_sign(Message, SecretKey, Credential);
+  sign(Message, SecretKey, Credential);
 sign(Message,SecretKey,Credential) when is_binary(Message), is_binary(SecretKey), is_binary(Credential)->
   erlang:nif_error(?LINE).
 
@@ -61,7 +61,7 @@ sign(Message, SecretKeyFile, CredentialFile, BasenameFile) when is_binary(Messag
 sign(Message, SecretKeyFile, CredentialFile, Basename) when is_binary(Message), is_binary(Basename)->
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
-  do_sign(Message, SecretKey, Credential, Basename).
+  sign(Message, SecretKey, Credential, Basename).
 sign(Message,SecretKey,Credential,Basename) when is_binary(Message), is_binary(SecretKey), is_binary(Credential), is_binary(Basename)->
   erlang:nif_error(?LINE).
 
