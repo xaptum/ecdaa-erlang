@@ -60,7 +60,7 @@ MESSAGE( STATUS "ERL_INTERFACE_LIB_DIR:         " ${ERL_INTERFACE_LIB_DIR} )
 # Add shared Libary
 ################################################################################
 
-add_subdirectory(ecdaa)
+#add_subdirectory(ecdaa)
 
 link_directories(${ERL_INTERFACE_LIB_DIR})
 
@@ -71,14 +71,19 @@ set_target_properties(ecdaa-erlang PROPERTIES
     SOVERSION "${ECDAA_NIF_SOVERSION}"
 )
 
+#get_filename_component(ECDAA_INCLUDE_DIR ecdaa/include ABSOLUTE)
+#get_filename_component(ECDAA_SUB_INCLUDE_DIR ecdaa/include/ecdaa ABSOLUTE)
+
 target_link_libraries(ecdaa-erlang
-PUBLIC erl_interface ei)
+PUBLIC ecdaa erl_interface ei)
 
 target_include_directories(ecdaa-erlang PUBLIC
     $<BUILD_INTERFACE:${ERL_INTERFACE_INCLUDE_DIR}>
     $<BUILD_INTERFACE:${ERTS_INCLUDE_DIR}>
-    #$<BUILD_INTERFACE:${ECDAA_INCLUDE_DIRS}>
-    #$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    #$<BUILD_INTERFACE:${ECDAA_INCLUDE_DIR}>
+    #$<BUILD_INTERFACE:${ECDAA_SUB_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:/usr/local/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 install(TARGETS ecdaa-erlang
