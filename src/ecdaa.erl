@@ -10,6 +10,8 @@
 -author("iguberman").
 
 
+-on_load(init/0).
+
 %% API
 -export([
   ecdaa_sign/3,
@@ -20,7 +22,7 @@
 -type signature() :: <<_:128>>.
 
 init() ->
-  ok = erlang:load_nif("./ecdaa", 0).
+  ok = erlang:load_nif("libecdaa-erlang", 0).
 
 -spec ecdaa_sign(Message::binary(), SecretKeyFile::list(), CredentialFile::list()) -> signature().
 ecdaa_sign(Message, SecretKeyFile, CredentialFile) when is_binary(Message) ->
@@ -36,9 +38,9 @@ ecdaa_sign(Message, SecretKeyFile, CredentialFile, Basename) when is_binary(Mess
 
 
 -spec ecdaa_do_sign(Message::binary(), SecretKey::binary(), Credential::binary(), Basename::binary()) -> signature().
-ecdaa_do_sign(_,_,_,_)-> ok.
-%%  erlang:nif_error(?LINE).
+ecdaa_do_sign(_,_,_,_)->
+  erlang:nif_error(?LINE).
 
 -spec ecdaa_do_sign(Message::binary(), SecretKey::binary(), Credential::binary()) -> signature().
-ecdaa_do_sign(_,_,_)-> ok.
-%%  erlang:nif_error(?LINE).
+ecdaa_do_sign(_,_,_)->
+  erlang:nif_error(?LINE).
