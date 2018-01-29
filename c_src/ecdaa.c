@@ -5,7 +5,7 @@ ErlNifBinary* BINARY_RESOURCE_TYPE;
 ErlNifResourceType* ERLNIF_RESOURCE_TYPE;
 
 static ERL_NIF_TERM
-ecdaa_do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 
      ErlNifBinary* message;
