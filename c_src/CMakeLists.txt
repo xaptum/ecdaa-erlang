@@ -75,7 +75,7 @@ set_target_properties(ecdaa-erlang PROPERTIES
 #get_filename_component(ECDAA_SUB_INCLUDE_DIR ecdaa/include/ecdaa ABSOLUTE)
 
 target_link_libraries(ecdaa-erlang
-PUBLIC xaptum-tpm AMCL ecdaa erl_interface ei)
+PUBLIC xaptum-tpm amcl ecdaa erl_interface ei)
 
 target_include_directories(ecdaa-erlang PUBLIC
     $<BUILD_INTERFACE:${ERL_INTERFACE_INCLUDE_DIR}>
