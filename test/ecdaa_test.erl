@@ -12,7 +12,7 @@
 -include_lib("eunit/include/eunit.hrl").
 
 -define(MODBYTES_256_56, 32).
--define(SIG_LENGTH, (2*MODBYTES_256_56 + 5*(2*MODBYTES_256_56 + 1))).
+-define(SIG_LENGTH, (2*?MODBYTES_256_56 + 5*(2*?MODBYTES_256_56 + 1))).
 
 member_sign_no_basename_test() ->
   Signature = ecdaa:sign(<<"Hello ECDAA NIFs!">>, "sk.bin", "cred.bin"),
