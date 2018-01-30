@@ -48,6 +48,7 @@ sign(MessageFile, SecretKeyFile, CredentialFile) when is_list(MessageFile) ->
   {ok, MessageBin} = file:read_file(MessageFile),
   sign(MessageBin, SecretKeyFile, CredentialFile);
 sign(Message, SecretKeyFile, CredentialFile) when is_binary(Message) ->
+  io:format("Signing ~p with SK ~p and CRED ~p~n", [Message, SecretKeyFile, CredentialFile]),
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
   sign(Message, SecretKey, Credential).
