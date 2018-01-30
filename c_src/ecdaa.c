@@ -1,9 +1,8 @@
 #include <ecdaa.h>
 #include <erl_nif.h>
 
-ErlNifBinary* BINARY_RESOURCE_TYPE;
-ErlNifResourceType* ERLNIF_RESOURCE_TYPE;
-
+#define MAX_MESSAGE_SIZE 1024
+#define MAX_BASENAME_SIZE 1024
 
 static ERL_NIF_TERM
 do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
@@ -23,12 +22,24 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
      if(!enif_inspect_binary(env, argv[0], &message)) {
         return enif_make_badarg(env);
      }
+     else if (message.size <= 0 || message.size > MAX_MESSAGE_SIZE) {
+        fprintf(stderr, "Invalid message size %lu of message \"%s\"\n", (unsigned long) message.size, message.data);
+        return enif_make_badarg(env);
+     }
 
      if(!enif_inspect_binary(env, argv[1], &secret_key)) {
         return enif_make_badarg(env);
      }
+     else if ( ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH != secret_key.size) {
+        fprintf(stderr, "Got bad size secret key: expected %lu got %lu (size of \"%s\")\n", (unsigned long) ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH, (unsigned long) secret_key.size, secret_key.data);
+        return enif_make_badarg(env);
+     }
 
      if(!enif_inspect_binary(env, argv[2], &credential)) {
+        return enif_make_badarg(env);
+     }
+     else if ( ECDAA_CREDENTIAL_FP256BN_LENGTH != credential.size) {
+        fprintf(stderr, "Got bad size credential: expected %lu got %lu (size of \"%s\")\n", (unsigned long) ECDAA_CREDENTIAL_FP256BN_LENGTH, (unsigned long) credential.size, credential.data);
         return enif_make_badarg(env);
      }
 
@@ -36,7 +47,13 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         if(!enif_inspect_binary(env, argv[3], &basename)) {
             return enif_make_badarg(env);
         }
+        else if (basename.size <= 0 || basename.size > MAX_BASENAME_SIZE) {
+            fprintf(stderr, "Invalid basename size %lu of basename \"%s\"\n", (unsigned long) basename.size, basename.data);
+            return enif_make_badarg(env);
+        }
      }
+
+
 
 //    uint8_t buffer[1024];
 
@@ -50,35 +67,22 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       // Validate member secret key
       struct ecdaa_member_secret_key_FP256BN sk;
 
-      if ( ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH != secret_key.size) {
-          fprintf(stderr, "Got bad size secret key: expected %zu got %d (size of \"%s\")\n", ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH, secret_key.size, secret_key.data);
-          return 1;
-      }
-
       if ( 0 != ecdaa_member_secret_key_FP256BN_deserialize(&sk, secret_key.data)) {
           fputs("Error deserializing member secret key\n", stderr);
           return 1;
       }
 //
-//      // Read member credential from disk
+//      // Validate credential arg
 //      struct ecdaa_credential_FP256BN cred;
-        if ( ECDAA_CREDENTIAL_FP256BN_LENGTH != credential.size) {
-          fprintf(stderr, "Got bad size credential: expected %zu got %d (size of \"%s\")\n", ECDAA_CREDENTIAL_FP256BN_LENGTH, credential.size, credential.data);
-          return 1;
-      }
+
 //
 //      if (0 != ecdaa_credential_FP256BN_deserialize(&cred, buffer)) {
 //          fputs("Error deserializing member credential\n", stderr);
 //          return 1;
 //      }
 //
-//      // Read message file
-      uint8_t message[MAX_MESSAGE_SIZE];
-      int read_ret = read_file_into_buffer(message, sizeof(message), args.message_file);
-      if (message.size <= 0 || message.size > MAX_MESSAGE_SIZE) {
-          fprintf(stderr, "Invalid message size %d of message \"%s\"\n", message.size, message.data);
-          return 1;
-      }
+//      // Validate message arg
+
 //      uint32_t msg_len = (uint32_t)read_ret;
 
 
