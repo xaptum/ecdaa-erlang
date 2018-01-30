@@ -17,7 +17,9 @@
 %% API
 -export([
   sign/3,
-  sign/4]).
+  sign/4,
+  do_sign/3,
+  do_sign/4]).
 
 -type signature() :: <<_:128>>.
 -type message() :: [list() | binary()].
@@ -35,7 +37,7 @@ init() ->
                    filename:join([priv, ?LIBNAME])
                end;
              Dir ->
-               filename:join(Dir, ?LIBNAME)
+               filename:join([Dir, ?LIBNAME])
            end,
   erlang:load_nif(SoName, 0).
 
@@ -47,8 +49,9 @@ sign(MessageFile, SecretKeyFile, CredentialFile) when is_list(MessageFile) ->
 sign(Message, SecretKeyFile, CredentialFile) when is_binary(Message) ->
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
-  sign(Message, SecretKey, Credential);
-sign(Message,SecretKey,Credential) when is_binary(Message), is_binary(SecretKey), is_binary(Credential)->
+  sign(Message, SecretKey, Credential).
+
+do_sign(Message,SecretKey,Credential) when is_binary(Message), is_binary(SecretKey), is_binary(Credential)->
   erlang:nif_error(?LINE).
 
 -spec sign(Message::message(), SecretKeyFile::secret_key(), CredentialFile::credential(), Basename::basename()) -> signature().
@@ -61,8 +64,9 @@ sign(Message, SecretKeyFile, CredentialFile, BasenameFile) when is_binary(Messag
 sign(Message, SecretKeyFile, CredentialFile, Basename) when is_binary(Message), is_binary(Basename)->
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
-  sign(Message, SecretKey, Credential, Basename);
-sign(Message,SecretKey,Credential,Basename) when is_binary(Message), is_binary(SecretKey), is_binary(Credential), is_binary(Basename)->
+  do_sign(Message, SecretKey, Credential, Basename).
+
+do_sign(Message,SecretKey,Credential,Basename) when is_binary(Message), is_binary(SecretKey), is_binary(Credential), is_binary(Basename)->
   erlang:nif_error(?LINE).
 
 

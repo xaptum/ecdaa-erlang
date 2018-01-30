@@ -4,8 +4,35 @@
 ErlNifBinary* BINARY_RESOURCE_TYPE;
 ErlNifResourceType* ERLNIF_RESOURCE_TYPE;
 
+void
+free_resource(ErlNifEnv* env, void* obj)
+{
+
+}
+
+static int
+load(ErlNifEnv* env, void** priv, ERL_NIF_TERM load_info)
+{
+    const char* mod = "ecdaa";
+    const char* name = "ecdaa";
+
+    ErlNifResourceFlags flags = ErlNifResourceFlags(
+        ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER
+    );
+
+    ERLNIF_RESOURCE_TYPE = enif_open_resource_type(
+        env, mod, name, free_resource, flags, NULL
+    );
+
+    if(ERLNIF_RESOURCE_TYPE == NULL)
+        return -1;
+
+    return 0;
+}
+
+
 static ERL_NIF_TERM
-sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 
      ErlNifBinary* message;
@@ -112,12 +139,12 @@ sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 //      printf("Signature successfully created!\n");
 //      }
 
-    return enif_make_int(env, 0);
+    return enif_make_int(env, 123);
 }
 
 static ErlNifFunc nif_funcs[] = {
-    {"sign", 3, sign},
-    {"sign", 4, sign}
+    {"do_sign", 3, do_sign},
+    {"do_sign", 4, do_sign}
 };
 
-ERL_NIF_INIT(ecdaa, nif_funcs, NULL, NULL, NULL, NULL)
+ERL_NIF_INIT(ecdaa, nif_funcs, &load, NULL, NULL, NULL)
