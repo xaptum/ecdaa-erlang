@@ -50,20 +50,20 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       // Validate member secret key
       struct ecdaa_member_secret_key_FP256BN sk;
 
-      if (ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH != secret_key.size)
-          fprintf(stderr, "Got bad size secret key: expected % got %u (size of \"%s\")\n", ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH, secret_key.size, secret_key.data);
+      if ( ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH != secret_key.size)
+          fprintf(stderr, "Got bad size secret key: expected %z got %z (size of \"%s\")\n", ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH, secret_key.size, secret_key.data);
           return 1;
       }
 
-//      if (0 != ecdaa_member_secret_key_FP256BN_deserialize(&sk, buffer)) {
-//          fputs("Error deserializing member secret key\n", stderr);
-//          return 1;
-//      }
+      if (0 != ecdaa_member_secret_key_FP256BN_deserialize(&sk, secret_key.data)) {
+          fputs("Error deserializing member secret key\n", stderr);
+          return 1;
+      }
 //
 //      // Read member credential from disk
 //      struct ecdaa_credential_FP256BN cred;
-        if (ECDAA_CREDENTIAL_FP256BN_LENGTH != credential.size) {
-          fprintf(stderr, "Got bad size credential: expected % got %u (size of \"%s\")\n", ECDAA_CREDENTIAL_FP256BN_LENGTH, credential.size, credential.data);
+        if ( ECDAA_CREDENTIAL_FP256BN_LENGTH != credential.size) {
+          fprintf(stderr, "Got bad size credential: expected %z got %z (size of \"%s\")\n", ECDAA_CREDENTIAL_FP256BN_LENGTH, credential.size, credential.data);
           return 1;
       }
 //
@@ -76,7 +76,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       uint8_t message[MAX_MESSAGE_SIZE];
       int read_ret = read_file_into_buffer(message, sizeof(message), args.message_file);
       if (message.size <= 0 || message.size > MAX_MESSAGE_SIZE) {
-          fprintf(stderr, "Invalid message size %u of message \"%s\"\n", message.size, message.data);
+          fprintf(stderr, "Invalid message size %z of message \"%s\"\n", message.size, message.data);
           return 1;
       }
 //      uint32_t msg_len = (uint32_t)read_ret;
