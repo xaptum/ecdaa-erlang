@@ -10,7 +10,7 @@
 -author("iguberman").
 
 -define(APPNAME, ecdaa).
--define(LIBNAME, ecdaa-erlang).
+-define(LIBNAME, 'ecdaa-erlang').
 
 -on_load(init/0).
 
