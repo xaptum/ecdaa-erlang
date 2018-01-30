@@ -51,7 +51,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       struct ecdaa_member_secret_key_FP256BN sk;
 
       if (ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH != secret_key.size)
-          fprintf(stderr, "Got bad size secret key: expected %u got %u (size of \"%s\")\n", ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH, secret_key.size, secret_key.data);
+          fprintf(stderr, "Got bad size secret key: expected % got %u (size of \"%s\")\n", ECDAA_MEMBER_SECRET_KEY_FP256BN_LENGTH, secret_key.size, secret_key.data);
           return 1;
       }
 
@@ -63,7 +63,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 //      // Read member credential from disk
 //      struct ecdaa_credential_FP256BN cred;
         if (ECDAA_CREDENTIAL_FP256BN_LENGTH != credential.size) {
-          fprintf(stderr, "Got bad size credential: expected %u got %u (size of \"%s\")\n", ECDAA_CREDENTIAL_FP256BN_LENGTH, credential.size, credential.data);
+          fprintf(stderr, "Got bad size credential: expected % got %u (size of \"%s\")\n", ECDAA_CREDENTIAL_FP256BN_LENGTH, credential.size, credential.data);
           return 1;
       }
 //
