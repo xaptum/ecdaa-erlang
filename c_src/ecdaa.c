@@ -109,7 +109,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     memcpy(sig_out->data, sig_buffer, ECDAA_SIGNATURE_FP256BN_LENGTH);
 
     printf("Signature successfully created!\n");
-    return enif_make_binary(env, sig_out);
+    return enif_make_binary(env, &sig_out);
 }
 
 static ErlNifFunc nif_funcs[] = {
