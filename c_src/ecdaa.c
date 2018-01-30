@@ -104,7 +104,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     ErlNifBinary *sig_out;
     enif_alloc_binary(ECDAA_SIGNATURE_FP256BN_LENGTH, sig_out);
-    strcpy(sig_out->data, buffer);
+    memcpy(sig_out->data, buffer);
 
     printf("Signature successfully created!\n");
     return enif_make_binary(env, sig_out);
