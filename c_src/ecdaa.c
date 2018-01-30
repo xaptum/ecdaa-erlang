@@ -4,41 +4,15 @@
 ErlNifBinary* BINARY_RESOURCE_TYPE;
 ErlNifResourceType* ERLNIF_RESOURCE_TYPE;
 
-void
-free_resource(ErlNifEnv* env, void* obj)
-{
-
-}
-
-static int
-load(ErlNifEnv* env, void** priv, ERL_NIF_TERM load_info)
-{
-    const char* mod = "ecdaa";
-    const char* name = "ecdaa";
-
-    ErlNifResourceFlags flags = ErlNifResourceFlags(
-        ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER
-    );
-
-    ERLNIF_RESOURCE_TYPE = enif_open_resource_type(
-        env, mod, name, free_resource, flags, NULL
-    );
-
-    if(ERLNIF_RESOURCE_TYPE == NULL)
-        return -1;
-
-    return 0;
-}
-
 
 static ERL_NIF_TERM
 do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 
-     ErlNifBinary* message;
-     ErlNifBinary* secret_key;
-     ErlNifBinary* credential;
-     ErlNifBinary* basename;
+     ErlNifBinary message;
+     ErlNifBinary secret_key;
+     ErlNifBinary credential;
+     ErlNifBinary basename;
 
 //     uint8_t *basename = NULL;
 
@@ -46,20 +20,20 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
      }
 
-     if(!enif_get_resource(env, argv[0], ERLNIF_RESOURCE_TYPE, (void**) &message)) {
+     if(!enif_inspect_binary(env, argv[0], &message)) {
         return enif_make_badarg(env);
      }
 
-     if(!enif_get_resource(env, argv[1], ERLNIF_RESOURCE_TYPE, (void**) &secret_key)) {
+     if(!enif_inspect_binary(env, argv[1], &secret_key)) {
         return enif_make_badarg(env);
      }
 
-     if(!enif_get_resource(env, argv[2], ERLNIF_RESOURCE_TYPE, (void**) &credential)) {
+     if(!enif_inspect_binary(env, argv[2], &credential)) {
         return enif_make_badarg(env);
      }
 
      if(argc == 4){
-        if(!enif_get_resource(env, argv[3], ERLNIF_RESOURCE_TYPE, (void**) &basename)) {
+        if(!enif_inspect_binary(env, argv[3], &basename)) {
             return enif_make_badarg(env);
         }
      }
@@ -147,4 +121,4 @@ static ErlNifFunc nif_funcs[] = {
     {"do_sign", 4, do_sign}
 };
 
-ERL_NIF_INIT(ecdaa, nif_funcs, &load, NULL, NULL, NULL)
+ERL_NIF_INIT(ecdaa, nif_funcs, NULL, NULL, NULL, NULL)
