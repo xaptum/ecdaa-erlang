@@ -55,7 +55,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
 
 
-//    uint8_t buffer[1024];
+//
 
       // Initialize PRNG
       struct ecdaa_prng rng;
@@ -69,57 +69,45 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
       if ( 0 != ecdaa_member_secret_key_FP256BN_deserialize(&sk, secret_key.data)) {
           fputs("Error deserializing member secret key\n", stderr);
-          return 1;
+          return enif_make_int(env, 1);
       }
-//
-//      // Validate credential arg
-//      struct ecdaa_credential_FP256BN cred;
 
-//
-//      if (0 != ecdaa_credential_FP256BN_deserialize(&cred, buffer)) {
-//          fputs("Error deserializing member credential\n", stderr);
-//          return 1;
-//      }
-//
-//      // Validate message arg
+    // Validate credential arg
+      struct ecdaa_credential_FP256BN cred;
 
-//      uint32_t msg_len = (uint32_t)read_ret;
+      if (0 != ecdaa_credential_FP256BN_deserialize(&cred, credential.data)) {
+          fputs("Error deserializing member credential\n", stderr);
+          return enif_make_int(env, 1);
+      }
 
+      uint32_t basename_len = 0;
+      uint8_t *basename_data = NULL;
+      if (NULL != basename){
+            basename_len = basename.size;
+            basename_data = basename.data;
+      }
 
-// Read basename file (if requested)
-//      uint8_t *basename = NULL;
-//      uint32_t basename_len = 0;
-//      uint8_t basename_buffer[MAX_MESSAGE_SIZE];
-//      if (NULL != args.basename_file) {
-//          basename = basename_buffer;
-//
-//          int read_ret = read_file_into_buffer(basename_buffer, sizeof(basename_buffer), args.basename_file);
-//          if (read_ret < 0) {
-//              fprintf(stderr, "Error reading basename file: \"%s\"\n", args.basename_file);
-//              return 1;
-//          }
-//          basename_len = (uint32_t)read_ret;
-//      }
-//
-//      // Create signature
-//      struct ecdaa_signature_FP256BN sig;
-//      if (0 != ecdaa_signature_FP256BN_sign(&sig, message, msg_len, basename, basename_len, &sk, &cred, &rng)) {
-//          message[msg_len] = 0;
-//          fprintf(stderr, "Error signing message: \"%s\"\n", (char*)message);
-//          return 1;
-//      }
-//
-//      // Write signature to file
-//      ecdaa_signature_FP256BN_serialize(buffer, &sig, basename_len != 0);
-//      if (ECDAA_SIGNATURE_FP256BN_LENGTH != write_buffer_to_file(args.sig_out_file, buffer, ECDAA_SIGNATURE_FP256BN_LENGTH)) {
-//          fprintf(stderr, "Error writing signature to file: \"%s\"\n", args.sig_out_file);
-//          return 1;
-//      }
-//
-//      printf("Signature successfully created!\n");
-//      }
+      // Create signature
+      struct ecdaa_signature_FP256BN sig;
+      if (0 != ecdaa_signature_FP256BN_sign(&sig, message.data, message.size, basename_data, basename_len, &sk, &cred, &rng)) {
+          fprintf(stderr, "Error signing message: \"%s\"\n", message.data);
+          return enif_make_int(env, 1);
+      }
 
-    return enif_make_int(env, 123);
+    uint8_t buffer[1024];
+    // Write signature to binary
+    ecdaa_signature_FP256BN_serialize(buffer, &sig, basename_len != 0);
+    if (ECDAA_SIGNATURE_FP256BN_LENGTH != sizeof(buffer)) {
+        fprintf(stderr, "Error deserializing signature to a binary buffer: \"%s\"\n", args.sig_out_file);
+        return enif_make_int(env, 1);
+    }
+
+    ErlNifBinary *sig_out;
+    enif_alloc_binary(ECDAA_SIGNATURE_FP256BN_LENGTH, sig_out);
+    strcpy(sig_out->data, buffer);
+
+    printf("Signature successfully created!\n");
+    return enif_make_binary(env, sig_out);
 }
 
 static ErlNifFunc nif_funcs[] = {
