@@ -82,7 +82,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
       uint32_t basename_len = 0;
       uint8_t *basename_data = NULL;
-      if (NULL != basename){
+      if (NULL != (void *) basename){
             basename_len = basename.size;
             basename_data = basename.data;
       }
@@ -98,13 +98,13 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     // Write signature to binary
     ecdaa_signature_FP256BN_serialize(buffer, &sig, basename_len != 0);
     if (ECDAA_SIGNATURE_FP256BN_LENGTH != sizeof(buffer)) {
-        fprintf(stderr, "Error deserializing signature to a binary buffer: \"%s\"\n", args.sig_out_file);
+        fprintf(stderr, "Error deserializing signature to a binary buffer: \"%s\"\n", buffer);
         return enif_make_int(env, 1);
     }
 
     ErlNifBinary *sig_out;
     enif_alloc_binary(ECDAA_SIGNATURE_FP256BN_LENGTH, sig_out);
-    memcpy(sig_out->data, buffer);
+    memcpy(sig_out->data, buffer, ECDAA_SIGNATURE_FP256BN_LENGTH);
 
     printf("Signature successfully created!\n");
     return enif_make_binary(env, sig_out);
