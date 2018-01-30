@@ -16,6 +16,7 @@
 
 %% API
 -export([
+  priv_dir/0,
   sign/3,
   sign/4,
   do_sign/3,
@@ -28,19 +29,19 @@
 -type basename() :: [list() | binary() ].
 
 init() ->
-  SoName = case code:priv_dir(?APPNAME) of
-             {error, bad_name} ->
-               case filelib:is_dir(filename:join(["..", priv])) of
-                 true ->
-                   filename:join(["..", priv, ?LIBNAME]);
-                 _ ->
-                   filename:join([priv, ?LIBNAME])
-               end;
-             Dir ->
-               filename:join([Dir, ?LIBNAME])
-           end,
+  SoName = filename:join([priv_dir(), ?LIBNAME]),
   erlang:load_nif(SoName, 0).
 
+priv_dir() ->
+  case code:priv_dir(?APPNAME) of
+    {error, bad_name} ->
+      case filelib:is_dir(filename:join(["..", priv])) of
+        true ->
+          filename:join(["..", priv]);
+        _ -> "priv"
+      end;
+    Dir -> Dir
+  end.
 
 -spec sign(Message::message(), SecretKeyFile::secret_key(), CredentialFile::credential()) -> signature().
 sign(MessageFile, SecretKeyFile, CredentialFile) when is_list(MessageFile) ->
