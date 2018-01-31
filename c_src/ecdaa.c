@@ -14,6 +14,8 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
      ErlNifBinary credential;
      ErlNifBinary basename;
 
+     printf("Uninitialized basename size %lu!\n", [basename.size]);
+
      if(argc < 3) {
         return enif_make_badarg(env);
      }
