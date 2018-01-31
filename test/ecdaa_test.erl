@@ -24,31 +24,31 @@
 
 member_sign_no_basename_test() ->
   Priv = ecdaa:priv_dir(),
-  {ok, Signature} = file:read_file(priv_file(Priv, ?SIG_BIN)),
-  TestSig = ecdaa:sign(priv_file(Priv, ?MESSAGE_BIN), priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN)),
+  {ok, TestSig} = file:read_file(priv_file(Priv, ?SIG_BIN)),
+  Signature = ecdaa:sign(priv_file(Priv, ?MESSAGE_BIN), priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN)),
   io:format("member_sign_no_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature, size(Signature), ?SIG_SIZE]),
   ?assert(is_binary(Signature)),
   ?assert(size(Signature) =:= ?SIG_SIZE),
 
   %% either filename or binary supported for message field, test it too
-  TestSig = ecdaa:sign(?MESSAGE, priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN)),
+  Signature = ecdaa:sign(?MESSAGE, priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN)),
   io:format("member_sign_no_basename_test() part 2: got signature ~p of size ~b, expecting size ~b~n", [Signature, size(Signature), ?SIG_SIZE]),
-  io:format("member_sign_no_basename_test() expected signature ~p, generated ~p~n", [Signature, TestSig]),
+  io:format("member_sign_no_basename_test() expected signature ~p~n", [TestSig]),
   ?assert(Signature =:= TestSig).
 
 
 member_sign_with_basename_test() ->
   Priv = ecdaa:priv_dir(),
-  {ok, Signature} = file:read_file(priv_file(Priv, ?SIG_BIN)),
-  TestSig = ecdaa:sign(priv_file(Priv, ?MESSAGE_BIN), priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN), priv_file(Priv, ?BASENAME_BIN)),
+  {ok, TestSig} = file:read_file(priv_file(Priv, ?SIG_BIN)),
+  Signature = ecdaa:sign(priv_file(Priv, ?MESSAGE_BIN), priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN), priv_file(Priv, ?BASENAME_BIN)),
   io:format("member_sign_with_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature, size(Signature), ?SIG_SIZE]),
   ?assert(is_binary(Signature)),
   ?assert(size(Signature) =:= ?SIG_SIZE),
 
   %% either filename and/or binary supported for message and/or mybasename field, test it too
-  TestSig = ecdaa:sign(?MESSAGE, priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN), ?BASENAME),
+  Signature = ecdaa:sign(?MESSAGE, priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN), ?BASENAME),
   io:format("member_sign_with_basename_test() part 2: got signature ~p of size ~b, expecting size ~b~n", [Signature, size(Signature), ?SIG_SIZE]),
-  io:format("member_sign_with_basename_test() expected signature ~p,  generated ~p~n", [Signature, TestSig]),
+  io:format("member_sign_with_basename_test() expected signature ~p~n", [TestSig]),
   ?assert(TestSig =:= Signature).
 
 priv_file(PrivDir, Filename)->

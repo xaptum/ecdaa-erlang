@@ -14,8 +14,6 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
      ErlNifBinary credential;
      ErlNifBinary basename;
 
-//     uint8_t *basename = NULL;
-
      if(argc < 3) {
         return enif_make_badarg(env);
      }
@@ -83,6 +81,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
       uint32_t basename_len = 0;
       uint8_t *basename_data = NULL;
+
       if (0 != basename.size){
             basename_len = basename.size;
             basename_data = basename.data;
@@ -91,7 +90,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       // Create signature
       struct ecdaa_signature_FP256BN sig;
       if (0 != ecdaa_signature_FP256BN_sign(&sig, message.data, message.size, basename_data, basename_len, &sk, &cred, &rng)) {
-          fprintf(stderr, "Error signing message: \"%s\"\n", message.data);
+          fprintf(stderr, "Error signing message with basename_len %lu: \"%s\"\n", basename_len, message.data);
           return enif_make_int(env, 1);
       }
 
