@@ -17,6 +17,7 @@
 -define(CREDENTIAL_BIN, "cred.bin").
 -define(SECRET_KEY_BIN, "sk.bin").
 -define(SIG_BIN, "sig.bin").
+-define(SIG_NO_BASENAME_BIN, "sig_no_basename.bin").
 -define(BASENAME_BIN, "basename.bin").
 -define(BASENAME, <<"mybasename">>).
 -define(MESSAGE, <<"Hello ECDAA!">>).
@@ -24,7 +25,7 @@
 
 member_sign_no_basename_test() ->
   Priv = ecdaa:priv_dir(),
-  {ok, TestSig} = file:read_file(priv_file(Priv, ?SIG_BIN)),
+  {ok, TestSig} = file:read_file(priv_file(Priv, ?SIG_NO_BASENAME_BIN)),
   Signature = ecdaa:sign(priv_file(Priv, ?MESSAGE_BIN), priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN)),
   io:format("member_sign_no_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature, size(Signature), ?SIG_SIZE]),
   ?assert(is_binary(Signature)),

@@ -84,7 +84,7 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       uint32_t basename_len = 0;
       uint8_t *basename_data = NULL;
 
-      if (0 != basename.size){
+      if (basename.size > 0 && basename.size <= MAX_BASENAME_SIZE){
             basename_len = basename.size;
             basename_data = basename.data;
       }
