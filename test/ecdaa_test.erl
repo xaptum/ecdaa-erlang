@@ -23,6 +23,7 @@
 -define(BASENAME, <<"mybasename">>).
 -define(MESSAGE, <<"Hello ECDAA!">>).
 -define(REV_LIST_BIN, "sk_revocation_list.bin").
+-define(BN_REV_LIST_BIN, "bn_revocation_list.bin").
 
 member_sign_no_basename_test() ->
   Priv = ecdaa:priv_dir(),
@@ -31,8 +32,9 @@ member_sign_no_basename_test() ->
   GPKFile = priv_file(Priv, ?GPK_BIN),
   CredFile = priv_file(Priv, ?CREDENTIAL_BIN),
   RevListFile = priv_file(Priv, ?REV_LIST_BIN),
+  BnRevListFile = priv_file(Priv, ?BN_REV_LIST_BIN),
 
-  VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0",
+  VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0 " ++ BnRevListFile ++ " 0",
 
   Signature1 = ecdaa:sign(MessageFile, SecretKeyFile, CredFile),
   io:format("member_sign_no_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE]),
@@ -58,8 +60,9 @@ member_sign_with_basename_test() ->
   GPKFile = priv_file(Priv, ?GPK_BIN),
   CredFile = priv_file(Priv, ?CREDENTIAL_BIN),
   RevListFile = priv_file(Priv, ?REV_LIST_BIN),
+  BnRevListFile = priv_file(Priv, ?BN_REV_LIST_BIN),
 
-  VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0",
+  VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0 " ++ BnRevListFile ++ " 0 " ++ BasenameFile,
 
   Signature1 = ecdaa:sign(MessageFile, SecretKeyFile, CredFile, BasenameFile),
   file:write_file(?SIG_BIN, Signature1),
