@@ -13,6 +13,7 @@
 
 -define(MODBYTES_256_56, 32).
 -define(SIG_SIZE, (2*?MODBYTES_256_56 + 4*(2*?MODBYTES_256_56 + 1))).
+-define(SIG_SIZE_WITH_BN, (2*MODBYTES_256_56 + 5*(2*MODBYTES_256_56 + 1))).
 -define(MESSAGE_BIN, "message.bin").
 -define(CREDENTIAL_BIN, "cred.bin").
 -define(SECRET_KEY_BIN, "sk.bin").
@@ -65,16 +66,16 @@ member_sign_with_basename_test() ->
 
   Signature1 = ecdaa:sign(MessageFile, SecretKeyFile, CredFile, BasenameFile),
   file:write_file(?SIG_BIN, Signature1),
-  io:format("member_sign_with_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE]),
+  io:format("member_sign_with_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE_WITH_BN]),
   ?assert(is_binary(Signature1)),
-  ?assert(size(Signature1) =:= ?SIG_SIZE),
+  ?assert(size(Signature1) =:= ?SIG_SIZE_WITH_BN),
   verify_signature(VerifyCmd),
 
   %% either filename and/or binary supported for message and/or mybasename field, test it too
   Signature2 = ecdaa:sign(?MESSAGE, priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN), ?BASENAME),
-  io:format("member_sign_with_basename_test() part 2: got signature ~p of size ~b, expecting size ~b~n", [Signature2, size(Signature2), ?SIG_SIZE]),
+  io:format("member_sign_with_basename_test() part 2: got signature ~p of size ~b, expecting size ~b~n", [Signature2, size(Signature2), ?SIG_SIZE_WITH_BN]),
   file:write_file(?SIG_BIN, Signature2),
-  ?assert(size(Signature2) =:= ?SIG_SIZE),
+  ?assert(size(Signature2) =:= ?SIG_SIZE_WITH_BN),
   verify_signature(VerifyCmd).
 
 priv_file(PrivDir, Filename)->

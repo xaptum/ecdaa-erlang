@@ -9,3 +9,4 @@ test: compile
 
 clean:
 	rm -rf _build
+	rm -rf priv/ecdaa-erlang.so
