@@ -48,7 +48,7 @@ sign(MessageFile, SecretKeyFile, CredentialFile) when is_list(MessageFile) ->
   {ok, MessageBin} = file:read_file(MessageFile),
   sign(MessageBin, SecretKeyFile, CredentialFile);
 sign(Message, SecretKeyFile, CredentialFile) when is_binary(Message), is_list(SecretKeyFile), is_list(CredentialFile) ->
-  io:format("Signing ~p with SK ~p and CRED ~p~n", [Message, SecretKeyFile, CredentialFile]),
+  io:format("NO BASENAME SIGNING ~p with SK ~p and CRED ~p~n", [Message, SecretKeyFile, CredentialFile]),
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
   do_sign(Message, SecretKey, Credential).
@@ -64,6 +64,7 @@ sign(Message, SecretKeyFile, CredentialFile, BasenameFile) when is_binary(Messag
   {ok, BasenameBin} = file:read_file(BasenameFile),
   sign(Message, SecretKeyFile, CredentialFile, BasenameBin);
 sign(Message, SecretKeyFile, CredentialFile, Basename) when is_binary(Message), is_binary(Basename)->
+  io:format("BASENAME SIGNING ~p with SK ~p, CRED ~p, and BASENAME ~p~n", [Message, SecretKeyFile, CredentialFile, Basename]),
   {ok, SecretKey} = file:read_file(SecretKeyFile),
   {ok, Credential} = file:read_file(CredentialFile),
   do_sign(Message, SecretKey, Credential, Basename).
