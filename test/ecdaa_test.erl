@@ -36,8 +36,8 @@ member_sign_no_basename_test() ->
 
   Signature1 = ecdaa:sign(MessageFile, SecretKeyFile, CredFile),
   io:format("member_sign_no_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE]),
-  ?assert(is_binary(Signature)),
-  ?assert(size(Signature) =:= ?SIG_SIZE),
+  ?assert(is_binary(Signature1)),
+  ?assert(size(Signature1) =:= ?SIG_SIZE),
   file:write_file(?SIG_BIN, Signature1),
   Res = os:cmd(VerifyCmd),
   io:format("Verify result: ~p~n", [Res]),
