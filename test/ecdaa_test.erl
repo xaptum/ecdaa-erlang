@@ -13,7 +13,7 @@
 
 -define(MODBYTES_256_56, 32).
 -define(SIG_SIZE, (2*?MODBYTES_256_56 + 4*(2*?MODBYTES_256_56 + 1))).
--define(SIG_SIZE_WITH_BN, (2*MODBYTES_256_56 + 5*(2*MODBYTES_256_56 + 1))).
+-define(SIG_SIZE_WITH_BN, (2*?MODBYTES_256_56 + 5*(2*?MODBYTES_256_56 + 1))).
 -define(MESSAGE_BIN, "message.bin").
 -define(CREDENTIAL_BIN, "cred.bin").
 -define(SECRET_KEY_BIN, "sk.bin").
