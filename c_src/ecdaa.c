@@ -54,10 +54,6 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         }
      }
 
-
-
-//
-
       // Initialize PRNG
       struct ecdaa_prng rng;
       if (0 != ecdaa_prng_init(&rng)) {
@@ -96,9 +92,9 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
           return enif_make_int(env, 1);
       }
 
+    // Write signature binary buffer
     uint8_t sig_buffer[1024];
 
-    // Write signature to file
     int has_nym = basename_len != 0;
     uint32_t sig_length;
     if (has_nym) {
