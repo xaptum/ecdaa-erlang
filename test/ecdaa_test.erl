@@ -26,15 +26,16 @@
 -define(REV_LIST_BIN, "sk_revocation_list.bin").
 -define(BN_REV_LIST_BIN, "bn_revocation_list.bin").
 -define(SIG_VERIFIED, "Signature successfully verified!").
+-define(TEST_DATA_DIR, "test_data").
 
 member_sign_no_basename_test() ->
   Priv = ecdaa:priv_dir(),
-  MessageFile = priv_file(Priv, ?MESSAGE_BIN),
-  SecretKeyFile = priv_file(Priv, ?SECRET_KEY_BIN),
-  GPKFile = priv_file(Priv, ?GPK_BIN),
-  CredFile = priv_file(Priv, ?CREDENTIAL_BIN),
-  RevListFile = priv_file(Priv, ?REV_LIST_BIN),
-  BnRevListFile = priv_file(Priv, ?BN_REV_LIST_BIN),
+  MessageFile = filename:join([Priv, ?TEST_DATA_DIR, ?MESSAGE_BIN]),
+  SecretKeyFile = filename:join([Priv, ?TEST_DATA_DIR,  ?SECRET_KEY_BIN]),
+  GPKFile = filename:join([Priv, ?TEST_DATA_DIR,  ?GPK_BIN]),
+  CredFile = filename:join([Priv, ?TEST_DATA_DIR,  ?CREDENTIAL_BIN]),
+  RevListFile = filename:join([Priv, ?TEST_DATA_DIR,  ?REV_LIST_BIN]),
+  BnRevListFile = filename:join([Priv, ?TEST_DATA_DIR,  ?BN_REV_LIST_BIN]),
 
   VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0 " ++ BnRevListFile ++ " 0",
 
@@ -46,7 +47,7 @@ member_sign_no_basename_test() ->
   verify_signature(VerifyCmd),
 
   %% either filename or binary supported for message field, test it too
-  Signature2 = ecdaa:sign(?MESSAGE, SecretKeyFile, priv_file(Priv, ?CREDENTIAL_BIN)),
+  Signature2 = ecdaa:sign(?MESSAGE, SecretKeyFile, test_file(Priv, ?CREDENTIAL_BIN)),
   file:write_file(?SIG_BIN, Signature2),
   io:format("member_sign_no_basename_test() part 2: got signature ~p of size ~b, expecting size ~b~n", [Signature2, size(Signature2), ?SIG_SIZE]),
   verify_signature(VerifyCmd).
@@ -54,13 +55,13 @@ member_sign_no_basename_test() ->
 
 member_sign_with_basename_test() ->
   Priv = ecdaa:priv_dir(),
-  MessageFile = priv_file(Priv, ?MESSAGE_BIN),
-  BasenameFile = priv_file(Priv, ?BASENAME_BIN),
-  SecretKeyFile = priv_file(Priv, ?SECRET_KEY_BIN),
-  GPKFile = priv_file(Priv, ?GPK_BIN),
-  CredFile = priv_file(Priv, ?CREDENTIAL_BIN),
-  RevListFile = priv_file(Priv, ?REV_LIST_BIN),
-  BnRevListFile = priv_file(Priv, ?BN_REV_LIST_BIN),
+  MessageFile = filename:join([Priv, ?TEST_DATA_DIR, ?MESSAGE_BIN]),
+  BasenameFile = filename:join([Priv, ?TEST_DATA_DIR, ?BASENAME_BIN]),
+  SecretKeyFile = filename:join([Priv, ?TEST_DATA_DIR,  ?SECRET_KEY_BIN]),
+  GPKFile = filename:join([Priv, ?TEST_DATA_DIR,  ?GPK_BIN]),
+  CredFile = filename:join([Priv, ?TEST_DATA_DIR,  ?CREDENTIAL_BIN]),
+  RevListFile = filename:join([Priv, ?TEST_DATA_DIR,  ?REV_LIST_BIN]),
+  BnRevListFile = filename:join([Priv, ?TEST_DATA_DIR,  ?BN_REV_LIST_BIN]),
 
   VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0 " ++ BnRevListFile ++ " 0 " ++ BasenameFile,
 
@@ -72,14 +73,11 @@ member_sign_with_basename_test() ->
   verify_signature(VerifyCmd),
 
   %% either filename and/or binary supported for message and/or mybasename field, test it too
-  Signature2 = ecdaa:sign(?MESSAGE, priv_file(Priv, ?SECRET_KEY_BIN), priv_file(Priv, ?CREDENTIAL_BIN), ?BASENAME),
+  Signature2 = ecdaa:sign(?MESSAGE, test_file(Priv, ?SECRET_KEY_BIN), test_file(Priv, ?CREDENTIAL_BIN), ?BASENAME),
   io:format("member_sign_with_basename_test() part 2: got signature ~p of size ~b, expecting size ~b~n", [Signature2, size(Signature2), ?SIG_SIZE_WITH_BN]),
   file:write_file(?SIG_BIN, Signature2),
   ?assert(size(Signature2) =:= ?SIG_SIZE_WITH_BN),
   verify_signature(VerifyCmd).
-
-priv_file(PrivDir, Filename)->
-  filename:join([PrivDir, Filename]).
 
 verify_signature(VerifyCmd)->
   Res = os:cmd(VerifyCmd),
