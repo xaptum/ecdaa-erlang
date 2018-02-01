@@ -1,4 +1,4 @@
-{application, ecdaa_erlang,
+{application, ecdaa,
  [
   {description, "ECDAA NIFs"},
   {vsn, "1.0.0"},
