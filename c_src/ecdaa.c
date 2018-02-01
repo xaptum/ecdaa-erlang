@@ -14,8 +14,6 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
      ErlNifBinary credential;
      ErlNifBinary basename;
 
-     printf("Uninitialized basename size %lu!\n", basename.size);
-
      if(argc < 3) {
         return enif_make_badarg(env);
      }
@@ -44,6 +42,9 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
      }
 
+     uint32_t basename_len = 0;
+     uint8_t *basename_data = NULL;
+
      if(argc == 4){
         if(!enif_inspect_binary(env, argv[3], &basename)) {
             return enif_make_badarg(env);
@@ -51,6 +52,10 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         else if (basename.size <= 0 || basename.size > MAX_BASENAME_SIZE) {
             fprintf(stderr, "Invalid basename size %lu of basename \"%s\"\n", (unsigned long) basename.size, basename.data);
             return enif_make_badarg(env);
+        }
+        else{
+            basename_len = basename.size;
+            basename_data = basename.data;
         }
      }
 
@@ -75,14 +80,6 @@ do_sign(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
       if (0 != ecdaa_credential_FP256BN_deserialize(&cred, credential.data)) {
           fputs("Error deserializing member credential\n", stderr);
           return enif_make_int(env, 1);
-      }
-
-      uint32_t basename_len = 0;
-      uint8_t *basename_data = NULL;
-
-      if (basename.size > 0 && basename.size <= MAX_BASENAME_SIZE){
-            basename_len = basename.size;
-            basename_data = basename.data;
       }
 
       // Create signature
