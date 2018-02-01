@@ -39,9 +39,9 @@ member_sign_no_basename_test() ->
   VerifyCmd = "verify " ++ MessageFile ++ " " ++ ?SIG_BIN ++ " " ++ GPKFile ++  " " ++ RevListFile ++ " 0 " ++ BnRevListFile ++ " 0",
 
   Signature1 = ecdaa:sign(MessageFile, SecretKeyFile, CredFile),
-  io:format("member_sign_no_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE]),
   ?assert(is_binary(Signature1)),
   ?assert(size(Signature1) =:= ?SIG_SIZE),
+  io:format("member_sign_no_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE]),
   file:write_file(?SIG_BIN, Signature1),
   verify_signature(VerifyCmd),
 
@@ -66,9 +66,9 @@ member_sign_with_basename_test() ->
 
   Signature1 = ecdaa:sign(MessageFile, SecretKeyFile, CredFile, BasenameFile),
   file:write_file(?SIG_BIN, Signature1),
-  io:format("member_sign_with_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE_WITH_BN]),
   ?assert(is_binary(Signature1)),
   ?assert(size(Signature1) =:= ?SIG_SIZE_WITH_BN),
+  io:format("member_sign_with_basename_test() part 1: got signature ~p of size ~b, expecting size ~b~n", [Signature1, size(Signature1), ?SIG_SIZE_WITH_BN]),
   verify_signature(VerifyCmd),
 
   %% either filename and/or binary supported for message and/or mybasename field, test it too
