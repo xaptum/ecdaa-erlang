@@ -73,5 +73,7 @@ do_sign(Message,SecretKey,Credential,Basename) when is_binary(Message), is_binar
   erlang:nif_error(?LINE).
 
 
+tpm_sign()->ok.
+
 
 
